@@ -18,8 +18,14 @@
   display: none;
 }
 
-.line {
+.us {
   fill: none;
   stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.japan {
+  fill: none;
+  stroke: red;
   stroke-width: 1.5px;
 }

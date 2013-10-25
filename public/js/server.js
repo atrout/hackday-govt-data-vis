@@ -16,6 +16,7 @@ var file = new(static.Server)(webroot, {
 
 var indexHtml = filesys.readFileSync('./public/index.html');
 
+// TODO: improve this. should be able to get whatever data with better api calls
 http.createServer(function(request, response) {
     if (request.url === '/gdp') {
         var self = response ;
@@ -23,7 +24,34 @@ http.createServer(function(request, response) {
         var options = {
             host: "api.stlouisfed.org",
             port: 80,
-            path: "/fred/series/observations?series_id=GDP&api_key=8fb0d05280c678807993e6ef5e7e95a4&file_type=json",
+            path: "/fred/series/observations?series_id=USARGDPC&api_key=8fb0d05280c678807993e6ef5e7e95a4&file_type=json",
+            method: "GET"
+        }
+        
+        var callback = function(response) {
+            console.log("gdp request status: " + response.statusCode);
+            var str = '';
+
+            response.on('data', function(chunk) {
+                str += chunk;
+            });
+            
+            response.on('end', function() {
+                console.info("got the data!");
+                self.writeHeader(200, {"Content-Type": "application/json"});
+                self.write(str);
+                self.end();
+            });
+        }
+        
+        http.request(options, callback).end();
+    } else if (request.url === '/gdpjapan') {
+        var self = response ;
+
+        var options = {
+            host: "api.stlouisfed.org",
+            port: 80,
+            path: "/fred/series/observations?series_id=JPNRGDPC&api_key=8fb0d05280c678807993e6ef5e7e95a4&file_type=json",
             method: "GET"
         }
         
